@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BASE CALCULATOR</title>
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Nova+Mono&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --metal: #777970;
+    --dark-metal: #424640;
+    --green: #a8c58c;
+    --screen: #18251d;
+    --orange: #d56c38;
+    --cream: #dedbc9;
+}
+* { box-sizing: border-box; }
+body {
+    margin: 0; min-height: 100vh; display: flex; justify-content: center;
+    align-items: center; padding: 25px 12px;
+    background: radial-gradient(circle at center, #62665e, #272b28 80%);
+    font-family: 'Montserrat', sans-serif; color: #252923;
+}
+.calculator {
+    width: 100%; max-width: 480px; padding: 24px;
+    background: linear-gradient(145deg, #a3a397, #666960 35%, #85877c 70%, #50544e);
+    border: 3px solid #373b35; border-radius: 8px;
+    box-shadow: 0 18px 35px #0009, inset 0 2px 2px #ffffff65, inset 0 -4px 5px #0005;
+}
+.top-part {
+    display: flex; justify-content: space-between; align-items: center; gap: 8px;
+    border-bottom: 2px solid #41443d; padding-bottom: 15px; margin-bottom: 17px;
+}
+.brand { font-family: 'Russo One', sans-serif; font-size: 1.45rem; color: #282d27; letter-spacing: 2px; }
+.brand small { display: block; font-family: 'Montserrat', sans-serif; font-size: .57rem; letter-spacing: 3px; margin-top: 5px; }
+.model { font-family: 'Nova Mono', monospace; font-size: .65rem; text-align: right; color: #343830; }
+.window { background: #272c28; padding: 10px; border: 4px solid #42453e; border-radius: 4px; box-shadow: inset 0 3px 8px #000a; margin-bottom: 18px; }
+.display-label { font-family: 'Nova Mono', monospace; color: #8eaa7d; font-size: .65rem; letter-spacing: 2px; margin-bottom: 7px; }
+.display { background: var(--screen); min-height: 76px; border: 2px solid #101712; display: flex; flex-direction: column; justify-content: center; padding: 9px; color: var(--green); font-family: 'Nova Mono', monospace; text-align: right; overflow-wrap: anywhere; box-shadow: inset 0 0 12px #000; }
+#result { font-size: 1.65rem; font-weight: bold; min-height: 31px; }
+#status { color: #8a9a81; font-size: .68rem; min-height: 16px; margin-top: 4px; }
+.tabs { display: flex; gap: 8px; margin-bottom: 18px; }
+.tab { flex: 1; padding: 12px 5px; border: 2px solid #343831; background: #666a61; color: #e3e0d0; font-family: 'Russo One', sans-serif; font-size: .85rem; cursor: pointer; box-shadow: 0 3px 0 #33362f; }
+.tab.active { background: var(--orange); color: #fff8e9; border-color: #793c23; }
+.section-title { font-family: 'Russo One', sans-serif; font-size: .8rem; letter-spacing: 1.5px; margin: 15px 0 10px; color: #272b25; }
+.field { margin-bottom: 12px; min-width: 0; }
+label { display: block; font-size: .7rem; font-weight: bold; margin-bottom: 5px; letter-spacing: .7px; text-transform: uppercase; }
+input, select { width: 100%; min-width: 0; border: 2px solid #42463e; border-radius: 3px; background: #d5d4c5; color: #252a24; padding: 10px; font-family: 'Nova Mono', monospace; font-size: 1rem; outline: none; }
+input:focus, select:focus { border-color: #b65c32; }
+.input-row { display: grid; grid-template-columns: minmax(0, 2fr) minmax(80px, 1fr); gap: 12px; }
+.arithmetic-row { display: grid; grid-template-columns: minmax(0, 1fr) 25px minmax(0, 1fr); gap: 8px; align-items: center; }
+.operator-display { text-align: center; font-family: 'Russo One', sans-serif; font-size: 1.4rem; margin-top: 20px; }
+.operator-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px; }
+.key { min-height: 48px; border: 2px solid #383c35; border-radius: 5px; background: linear-gradient(145deg, #e1dfd0, #aaa99b); color: #292d27; font-family: 'Russo One', sans-serif; font-size: 1.05rem; cursor: pointer; box-shadow: 0 4px 0 #363a33, inset 0 2px 1px #ffffffa0; }
+.key:active { transform: translateY(3px); box-shadow: 0 1px 0 #363a33; }
+.key.active { background: var(--orange); color: white; }
+.calculate { width: 100%; min-height: 58px; margin-top: 10px; border: 2px solid #733b25; border-radius: 4px; background: linear-gradient(#df854e, #b9572e); color: #fff5df; font-family: 'Russo One', sans-serif; font-size: 1.15rem; letter-spacing: 2px; cursor: pointer; box-shadow: 0 5px 0 #603622; }
+.calculate:active { transform: translateY(3px); box-shadow: 0 2px 0 #603622; }
+.hidden { display: none !important; }
+.footer { border-top: 2px solid #44473f; margin-top: 22px; padding-top: 12px; display: flex; justify-content: space-between; font-family: 'Nova Mono', monospace; font-size: .58rem; letter-spacing: 1px; color: #34382f; }
+.solution-panel { margin-top: 22px; padding: 16px; background: linear-gradient(145deg, #c9c8b9, #e0dece); border: 2px solid #42463e; border-radius: 6px; box-shadow: inset 0 1px 3px #ffffff80, 0 5px 0 #45483f; }
+.solution-heading { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; font-family: 'Russo One', sans-serif; font-size: .72rem; letter-spacing: 1px; padding-bottom: 12px; border-bottom: 1px solid #777970; }
+#step-counter { color: #a94e2c; font-family: 'Nova Mono', monospace; font-size: .7rem; }
+.progress-track { height: 6px; margin: 14px 0 18px; background: #a2a294; border: 1px solid #74776d; overflow: hidden; }
+#progress-fill { width: 0%; height: 100%; background: #d56c38; transition: width .35s ease; }
+.step-card { padding: 14px; min-height: 160px; background: #242d26; border: 2px solid #53614f; border-left: 5px solid #d56c38; border-radius: 4px; color: #d9e4c9; animation: stepAppear .25s ease; }
+.step-number { color: #e18a54; font-family: 'Nova Mono', monospace; font-size: .7rem; letter-spacing: 1px; }
+.step-title { margin: 10px 0; color: #b8d39a; font-family: 'Russo One', sans-serif; font-size: .95rem; }
+.step-content { font-family: 'Nova Mono', monospace; font-size: .8rem; line-height: 1.9; overflow-wrap: anywhere; white-space: pre-wrap; }
+.solution-welcome { padding: 20px 8px; text-align: center; }
+.solution-icon { margin: auto; display: grid; place-items: center; width: 55px; height: 55px; border: 2px solid #d56c38; border-radius: 50%; color: #d56c38; font-family: 'Nova Mono', monospace; font-size: 1.8rem; }
+.solution-welcome h3 { font-family: 'Russo One', sans-serif; font-size: .95rem; }
+.solution-welcome p { font-size: .78rem; line-height: 1.8; }
+.step-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+.step-button, .show-all-button { padding: 12px 6px; border: 2px solid #42463e; border-radius: 4px; background: #777970; color: #fff8e9; font-family: 'Russo One', sans-serif; font-size: .68rem; cursor: pointer; }
+.step-button:not(:disabled):hover { background: #d56c38; }
+.step-button:disabled, .show-all-button:disabled { opacity: .4; cursor: not-allowed; }
+.show-all-button { width: 100%; margin-top: 10px; background: #303b30; border-color: #53614f; color: #c9e3b1; }
+.show-all-button:not(:disabled):hover { background: #465844; }
+.all-steps { display: flex; flex-direction: column; gap: 12px; }
+.all-steps .step-card { min-height: auto; }
+@keyframes stepAppear { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 380px) { .calculator { padding: 16px; } .brand { font-size: 1.2rem; } .key { min-height: 44px; } #result { font-size: 1.3rem; } .model { font-size: .55rem; } }
+@media (prefers-reduced-motion: reduce) { #progress-fill, .step-card { animation: none; transition: none; } }
+</style>
+</head>
+<body>
+<div class="calculator">
+    <header class="top-part">
+        <div class="brand">BASE CALCULATOR<small>NUMBER SYSTEMS</small></div>
+        <div class="model">GROUP NI<br>MARVIN BERNARDO</div>
+    </header>
+
+    <div class="window">
+        <div class="display-label">DIGITAL READOUT</div>
+        <div class="display">
+            <div id="result">READY</div>
+            <div id="status">SYSTEM ONLINE</div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" id="convert-tab" onclick="setMode('convert')">CONVERT</button>
+        <button class="tab" id="arithmetic-tab" onclick="setMode('arithmetic')">ARITHMETIC</button>
+    </div>
+
+    <section id="convert-section">
+        <div class="section-title">01 / NUMBER CONVERSION</div>
+        <div class="input-row">
+            <div class="field">
+                <label for="num1_conv">Input number</label>
+                <input id="num1_conv" type="text" placeholder="1011">
+            </div>
+            <div class="field">
+                <label for="base1_conv">Input base</label>
+                <input id="base1_conv" type="number" min="2" max="36" value="2">
+            </div>
+        </div>
+    </section>
+
+    <section id="arithmetic-section" class="hidden">
+        <div class="section-title">02 / ARITHMETIC UNIT</div>
+        <label>Operation selector</label>
+        <div class="operator-buttons">
+            <button class="key active" onclick="selectOp(this, '+')">+</button>
+            <button class="key" onclick="selectOp(this, '-')">−</button>
+            <button class="key" onclick="selectOp(this, '*')">×</button>
+            <button class="key" onclick="selectOp(this, '/')">÷</button>
+        </div>
+        <input type="hidden" id="operator" value="+">
+        <div class="arithmetic-row">
+            <div>
+                <div class="field">
+                    <label for="num1_arith">Operand A</label>
+                    <input id="num1_arith" type="text" placeholder="1010">
+                </div>
+                <div class="field">
+                    <label for="base1_arith">Base A</label>
+                    <input id="base1_arith" type="number" min="2" max="36" value="2">
+                </div>
+            </div>
+            <div class="operator-display" id="op-disp">+</div>
+            <div>
+                <div class="field">
+                    <label for="num2_arith">Operand B</label>
+                    <input id="num2_arith" type="text" placeholder="0011">
+                </div>
+                <div class="field">
+                    <label for="base2_arith">Base B</label>
+                    <input id="base2_arith" type="number" min="2" max="36" value="2">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-title">03 / OUTPUT CONFIGURATION</div>
+    <div class="field">
+        <label for="out_base">Output number base (2–36)</label>
+        <select id="out_base">
+            <option value="2">02 — Binary</option>
+            <option value="8">08 — Octal</option>
+            <option value="10" selected>10 — Decimal</option>
+            <option value="16">16 — Hexadecimal</option>
+            <option value="36">36 — Base 36</option>
+        </select>
+    </div>
+
+    <button class="calculate" onclick="calculate()">EXECUTE ▶</button>
+
+    <div class="solution-panel">
+        <div class="solution-heading">
+            <span>◈ INTERACTIVE WORKSPACE</span>
+            <span id="step-counter">STEP 0 / 0</span>
+        </div>
+        <div class="progress-track"><div id="progress-fill"></div></div>
+        <div id="solution">
+            <div class="solution-welcome">
+                <div class="solution-icon">∑</div>
+                <h3>Ready to Explore?</h3>
+                <p>Enter a number and execute a calculation to explore the solution one step at a time.</p>
+            </div>
+        </div>
+        <div class="step-controls">
+            <button id="prev-step" class="step-button" disabled>← PREVIOUS</button>
+            <button id="next-step" class="step-button" disabled>NEXT →</button>
+        </div>
+        <button id="show-all" class="show-all-button" disabled>REVEAL COMPLETE SOLUTION</button>
+    </div>
+
+    <div class="footer">
+        <span>BASE CALCULATOR</span>
+        <span id="footer-mode">CONVERT</span>
+    </div>
+</div>
+
+<script>
+let currentMode = 'convert';
+let solutionSteps = [];
+let currentStep = 0;
+let showingAll = false;
+
+function setMode(mode) {
+    currentMode = mode;
+    document.getElementById('convert-section').classList.toggle('hidden', mode !== 'convert');
+    document.getElementById('arithmetic-section').classList.toggle('hidden', mode !== 'arithmetic');
+    document.getElementById('convert-tab').classList.toggle('active', mode === 'convert');
+    document.getElementById('arithmetic-tab').classList.toggle('active', mode === 'arithmetic');
+    document.getElementById('footer-mode').textContent = mode.toUpperCase();
+    showStatus('SYSTEM READY');
+}
+
+function selectOp(button, operator) {
+    document.querySelectorAll('.operator-buttons .key').forEach(key => key.classList.remove('active'));
+    button.classList.add('active');
+    document.getElementById('operator').value = operator;
+    document.getElementById('op-disp').textContent =
+        operator === '*' ? '×' : operator === '/' ? '÷' : operator;
+}
+
+function showStatus(message) {
+    document.getElementById('status').textContent = message;
+}
+
+function showError(message) {
+    document.getElementById('result').textContent = 'ERROR';
+    showStatus(message.toUpperCase());
+    const box = document.getElementById('solution');
+    box.textContent = message;
+    solutionSteps = [];
+    document.getElementById('step-counter').textContent = 'NO STEPS';
+    document.getElementById('progress-fill').style.width = '0%';
+    document.getElementById('prev-step').disabled = true;
+    document.getElementById('next-step').disabled = true;
+    document.getElementById('show-all').disabled = true;
+}
+
+function renderInteractiveSolution(steps) {
+    solutionSteps = Array.isArray(steps) ? steps : [];
+    currentStep = 0;
+    showingAll = false;
+    document.getElementById('show-all').textContent = 'REVEAL COMPLETE SOLUTION';
+    document.getElementById('show-all').disabled = solutionSteps.length === 0;
+    if (solutionSteps.length) renderCurrentStep();
+    else document.getElementById('solution').textContent = 'No solution available.';
+}
+
+function makeStepCard(step, index) {
+    const card = document.createElement('div');
+    card.className = 'step-card';
+
+    const number = document.createElement('div');
+    number.className = 'step-number';
+    number.textContent = `OPERATION LOG // ${String(index + 1).padStart(2, '0')}`;
+
+    const title = document.createElement('div');
+    title.className = 'step-title';
+    title.textContent = step.title || `Step ${index + 1}`;
+
+    const content = document.createElement('div');
+    content.className = 'step-content';
+    content.textContent = step.content || '';
+
+    card.append(number, title, content);
+    return card;
+}
+
+function renderCurrentStep() {
+    if (!solutionSteps.length) return;
+    const box = document.getElementById('solution');
+    box.replaceChildren(makeStepCard(solutionSteps[currentStep], currentStep));
+
+    const total = solutionSteps.length;
+    document.getElementById('step-counter').textContent = `STEP ${currentStep + 1} / ${total}`;
+    document.getElementById('progress-fill').style.width = `${((currentStep + 1) / total) * 100}%`;
+    document.getElementById('prev-step').disabled = currentStep === 0;
+    document.getElementById('next-step').disabled = currentStep === total - 1;
+}
+
+document.getElementById('prev-step').addEventListener('click', () => {
+    if (showingAll) {
+        showingAll = false;
+        document.getElementById('show-all').textContent = 'REVEAL COMPLETE SOLUTION';
+    }
+    if (currentStep > 0) {
+        currentStep--;
+        renderCurrentStep();
+    }
+});
+
+document.getElementById('next-step').addEventListener('click', () => {
+    if (showingAll) {
+        showingAll = false;
+        document.getElementById('show-all').textContent = 'REVEAL COMPLETE SOLUTION';
+    }
+    if (currentStep < solutionSteps.length - 1) {
+        currentStep++;
+        renderCurrentStep();
+    }
+});
+
+document.getElementById('show-all').addEventListener('click', () => {
+    if (!solutionSteps.length) return;
+
+    const box = document.getElementById('solution');
+    showingAll = !showingAll;
+
+    if (!showingAll) {
+        document.getElementById('show-all').textContent = 'REVEAL COMPLETE SOLUTION';
+        renderCurrentStep();
+        return;
+    }
+
+    const container = document.createElement('div');
+    container.className = 'all-steps';
+    solutionSteps.forEach((step, index) => container.appendChild(makeStepCard(step, index)));
+    box.replaceChildren(container);
+
+    document.getElementById('step-counter').textContent = `${solutionSteps.length} STEPS REVEALED`;
+    document.getElementById('progress-fill').style.width = '100%';
+    document.getElementById('prev-step').disabled = false;
+    document.getElementById('next-step').disabled = false;
+    document.getElementById('show-all').textContent = 'RETURN TO STEP-BY-STEP';
+});
+
+async function calculate() {
+    const result = document.getElementById('result');
+    const payload = {
+        mode: currentMode,
+        out_base: document.getElementById('out_base').value
+    };
+
+    if (currentMode === 'convert') {
+        payload.num1 = document.getElementById('num1_conv').value.trim().toUpperCase();
+        payload.base1 = document.getElementById('base1_conv').value;
+    } else {
+        payload.num1 = document.getElementById('num1_arith').value.trim().toUpperCase();
+        payload.base1 = document.getElementById('base1_arith').value;
+        payload.num2 = document.getElementById('num2_arith').value.trim().toUpperCase();
+        payload.base2 = document.getElementById('base2_arith').value;
+        payload.operator = document.getElementById('operator').value;
+    }
+
+    result.textContent = '...';
+    showStatus('PROCESSING');
+
+    try {
+        const response = await fetch('/calculate', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+        if (!response.ok || !data.success) {
+            showError(data.error || 'Calculation failed');
+            return;
+        }
+
+        result.textContent = data.result;
+        renderInteractiveSolution(data.steps);
+        showStatus('CALCULATION COMPLETE');
+    } catch (error) {
+        showError('SERVER OFFLINE — make sure Flask is running.');
+    }
+}
+</script>
+</body>
+</html>
