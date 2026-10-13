@@ -156,13 +156,8 @@ input:focus, select:focus { border-color: #b65c32; }
     <div class="section-title">03 / OUTPUT CONFIGURATION</div>
     <div class="field">
         <label for="out_base">Output number base (2–36)</label>
-        <select id="out_base">
-            <option value="2">02 — Binary</option>
-            <option value="8">08 — Octal</option>
-            <option value="10" selected>10 — Decimal</option>
-            <option value="16">16 — Hexadecimal</option>
-            <option value="36">36 — Base 36</option>
-        </select>
+        <input id="out_base" type="number" min="2" max="36" value="2">
+
     </div>
 
     <button class="calculate" onclick="calculate()">EXECUTE ▶</button>
